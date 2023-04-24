@@ -63,7 +63,7 @@ def parse_args():
     parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", default=False, help="Show no information at all.")
     parser.add_argument("-debug", dest="debug", action="store_true", default=False, help="Debug mode.")
     parser.add_argument("-no-colors", dest="colors", action="store_false", default=True, help="Disables colored output mode")
-    parser.add_argument("-o", "--output-file", dest="output_file", type=str, default="accounts.xlsx", required=False, help="Output file to store the results in. (default: accounts.xlsx)")
+    parser.add_argument("-o", "--output-file", dest="output_file", type=str, default=None, required=False, help="Output file to store the results in. (default: accounts.xlsx)")
 
     authconn = parser.add_argument_group('authentication & connection')
     authconn.add_argument('--dc-ip', required=True, action='store', metavar="ip address", help='IP Address of the domain controller or KDC (Key Distribution Center) for Kerberos. If omitted it will use the domain part (FQDN) specified in the identity parameter')
@@ -341,8 +341,9 @@ def init_smb_session(args, target_ip, domain, username, password, address, lmhas
 if __name__ == '__main__':
     args = parse_args()
     init_logger(args)
-
-    args.output_file = "accounts_%s.xlsx" % args.auth_domain.lower()
+    
+    if args.output_file is None:
+        args.output_file = "accounts_%s.xlsx" % args.auth_domain.lower()
 
     auth_lm_hash = ""
     auth_nt_hash = ""
